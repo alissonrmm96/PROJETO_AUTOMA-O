@@ -1,1 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia Visual de Redes para Automação — v6</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+  
+  body { font-family: 'Inter', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  
+  .glow-cyan { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
+  .glow-green { box-shadow: 0 0 15px rgba(74, 222, 128, 0.4); }
+  .glow-purple { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); }
+  
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgba(34, 211, 238, 0.6);
+    box-shadow: 0 10px 40px rgba(34, 211, 238, 0.15);
+  }
+  
+  .tab-active {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(168, 85, 247, 0.15));
+    border-color: rgb(34, 211, 238) !important;
+    color: rgb(34, 211, 238);
+  }
+  
+  .grid-pattern {
+    background-image: 
+      linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  
+  .pulse-dot {
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(74, 222, 128, 0.8); }
+    50% { opacity: 0.6; box-shadow: 0 0 16px rgba(74, 222, 128, 1); }
+  }
+  
+  .fade-in { animation: fadeIn 0.4s ease-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .hidden { display: none; }
+</style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen grid-pattern">
 
+<!-- HEADER -->
+<header class="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-5">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/40 flex items-center justify-center glow-cyan">
+          <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
+            Guia Visual de <span class="text-cyan-400">Redes</span> para Automação
+          </h1>
+          <p class="text-xs text-slate-400 mono mt-1">Industrial Networking Reference</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <!-- Version Badge -->
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-orange-500 blur-md opacity-60 rounded-full"></div>
+          <div class="relative px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-orange-500 text-white font-bold text-sm tracking-wider flex items-center gap-2 glow-purple">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            Versão v6
+          </div>
+        </div>
+        
+        <!-- Online Status -->
+        <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/60 border border-green-500/30">
+          <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
+          <span class="text-xs text-green-400 mono font-medium">ONLINE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="flex gap-3 mt-6">
+      <button onclick="switchTab('cables')" id="tab-cables" class="tab-btn tab-active flex items-center gap-2 px-5 py-3 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-300 font-semibold text-sm transition-all hover:border-cyan-500/60">
+        <span class="text-lg">🔌</span>
+        <span>Meios Físicos (Cabos)</span>
+      </button>
+      <button onclick="switchTab('topology')" id="tab-topology" class="tab-btn flex items-center gap-2 px-5 py-3 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-300 font-semibold text-sm transition-all hover:border-cyan-500/60">
+        <span class="text-lg">📐</span>
+        <span>Simulador de Topologia</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+  <!-- ========== TAB 1: CABOS ========== -->
+  <section id="content-cables" class="fade-in">
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-2">Meios Físicos de Comunicação</h2>
+      <p class="text-slate-400 text-sm">Selecione e compare os principais cabos utilizados em redes industriais de automação.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Card: Ethernet Industrial -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-green-500/10 border border-green-500/30 text-green-400 mono">ATIVO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Ethernet Industrial</h3>
+        <p class="text-slate-400 text-sm mb-4">Cabos CAT5e/CAT6 blindados (STP) para ambientes com EMI. Padrão em PROFINET, EtherNet/IP e Modbus TCP.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-cyan-300 mono">100 Mbps – 1 Gbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-cyan-300 mono">Até 100 m</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Conector:</span><span class="text-cyan-300 mono">RJ45 / M12</span></div>
+        </div>
+      </div>
+
+      <!-- Card: PROFIBUS DP -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-purple-500/10 border border-purple-500/30 text-purple-400 mono">LEGADO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">PROFIBUS DP</h3>
+        <p class="text-slate-400 text-sm mb-4">Par trançado blindado (RS-485) com terminadores ativos. Amplamente usado em fieldbus industrial.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-purple-300 mono">9.6 kbps – 12 Mbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-purple-300 mono">Até 1200 m</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Conector:</span><span class="text-purple-300 mono">DB9 / M12</span></div>
+        </div>
+      </div>
+
+      <!-- Card: Fibra Óptica -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-green-500/10 border border-green-500/30 text-green-400 mono">ATIVO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Fibra Óptica</h3>
+        <p class="text-slate-400 text-sm mb-4">Monomodo (longa distância) ou multimodo (curta). Imune a EMI, ideal para backbone industrial.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-orange-300 mono">100 Mbps – 10 Gbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-orange-300 mono">Até 10+ km</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Conector:</span><span class="text-orange-300 mono">SC / LC / ST</span></div>
+        </div>
+      </div>
+
+      <!-- Card: CAN Bus -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-green-500/10 border border-green-500/30 text-green-400 mono">ATIVO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">CAN Bus</h3>
+        <p class="text-slate-400 text-sm mb-4">Par trançado com terminação de 120Ω. Base para CANopen e J1939 em automação veicular e industrial.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-cyan-300 mono">125 kbps – 1 Mbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-cyan-300 mono">Até 1000 m</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Conector:</span><span class="text-cyan-300 mono">DB9 / M12</span></div>
+        </div>
+      </div>
+
+      <!-- Card: RS-485 -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-green-500/10 border border-green-500/30 text-green-400 mono">ATIVO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">RS-485</h3>
+        <p class="text-slate-400 text-sm mb-4">Par trançado diferencial multiponto. Base de Modbus RTU e PROFIBUS PA. Excelente imunidade a ruído.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-purple-300 mono">Até 10 Mbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-purple-300 mono">Até 1200 m</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Conector:</span><span class="text-purple-300 mono">Terminal / DB9</span></div>
+        </div>
+      </div>
+
+      <!-- Card: Wireless Industrial -->
+      <div class="card-hover bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
+            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+          </div>
+          <span class="px-2 py-1 text-xs rounded-md bg-orange-500/10 border border-orange-500/30 text-orange-400 mono">NOVO</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Wireless Industrial</h3>
+        <p class="text-slate-400 text-sm mb-4">Wi-Fi 6 industrial (802.11ax), 5G privado e WirelessHART. Para áreas de difícil cabeamento.</p>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">Velocidade:</span><span class="text-orange-300 mono">Até 9.6 Gbps</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Distância:</span><span class="text-orange-300 mono">Variável</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Padrão:</span><span class="text-orange-300 mono">802.11ax / 5G</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== TAB 2: SIMULADOR ========== -->
+  <section id="content-topology" class="hidden fade-in">
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-2">Simulador de Topologia</h2>
+      <p class="text-slate-400 text-sm">Monte e visualize diferentes topologias de rede industrial.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Painel de Controle -->
+      <div class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <h3 class="text-lg font-bold text-cyan-400 mb-4 flex items-center gap-2">
+          <span>⚙️</span> Configuração
+        </h3>
+        
+        <label class="block text-xs text-slate-400 mb-2 mono uppercase tracking-wider">Topologia</label>
+        <select id="topologyType" onchange="renderTopology()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm text-white mb-4 focus:border-cyan-500 focus:outline-none">
+          <option value="star">⭐ Estrela</option>
+          <option value="line">➖ Linha (Daisy Chain)</option>
+          <option value="ring">🔵 Anel</option>
+          <option value="tree">🌳 Árvore</option>
+        </select>
+
+        <label class="block text-xs text-slate-400 mb-2 mono uppercase tracking-wider">Nós na Rede</label>
+        <input type="range" id="nodeCount" min="2" max="8" value="4" oninput="updateNodeLabel(); renderTopology()" class="w-full accent-cyan-500 mb-2">
+        <div class="flex justify-between text-xs text-slate-500 mono mb-4">
+          <span>2</span>
+          <span id="nodeLabel" class="text-cyan-400 font-bold">4 nós</span>
+          <span>8</span>
+        </div>
+
+        <label class="block text-xs text-slate-400 mb-2 mono uppercase tracking-wider">Meio Físico</label>
+        <select id="mediumType" onchange="renderTopology()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm text-white mb-4 focus:border-cyan-500 focus:outline-none">
+          <option value="ethernet">Ethernet Industrial</option>
+          <option value="profibus">PROFIBUS DP</option>
+          <option value="can">CAN Bus</option>
+          <option value="fiber">Fibra Óptica</option>
+        </select>
+
+        <div class="p-4 rounded-lg bg-slate-900/60 border border-slate-700/40">
+          <div class="text-xs text-slate-500 mono uppercase mb-2">Status</div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
+            <span class="text-sm text-green-400 mono" id="statusText">Rede Operacional</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas de Simulação -->
+      <div class="lg:col-span-2 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-cyan-400 flex items-center gap-2">
+            <span>📐</span> Visualização
+          </h3>
+          <span class="text-xs text-slate-500 mono" id="topologyInfo">Topologia: Estrela</span>
+        </div>
+        <div id="topologyCanvas" class="relative bg-slate-950/60 rounded-xl border border-slate-700/40 h-96 overflow-hidden grid-pattern">
+          <!-- SVG será injetado aqui -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-slate-800 mt-16 py-6">
+  <div class="max-w-7xl mx-auto px-6 text-center text-xs text-slate-500 mono">
+    Guia Visual de Redes para Automação — Versão v6 · Industrial Networking Reference
+  </div>
+</footer>
+
+<script>
+  // ============ TAB SWITCHING ============
+  function switchTab(tab) {
+    document.getElementById('content-cables').classList.add('hidden');
+    document.getElementById('content-topology').classList.add('hidden');
+    document.getElementById('tab-cables').classList.remove('tab-active');
+    document.getElementById('tab-topology').classList.remove('tab-active');
+
+    document.getElementById('content-' + tab).classList.remove('hidden');
+    document.getElementById('tab-' + tab).classList.add('tab-active');
+
+    if (tab === 'topology') renderTopology();
+  }
+
+  // ============ TOPOLOGY SIMULATOR ============
+  function updateNodeLabel() {
+    const n = document.getElementById('nodeCount').value;
+    document.getElementById('nodeLabel').textContent = n + ' nós';
+  }
+
+  function renderTopology() {
+    const type = document.getElementById('topologyType').value;
+    const count = parseInt(document.getElementById('nodeCount').value);
+    const medium = document.getElementById('mediumType').value;
+    const canvas = document.getElementById('topologyCanvas');
+    
+    const mediumColors = {
+      ethernet: '#22d3ee',
+      profibus: '#a855f7',
+      can: '#4ade80',
+      fiber: '#fb923c'
+    };
+    const color = mediumColors[medium];
+    const mediumNames = { ethernet: 'Ethernet', profibus: 'PROFIBUS', can: 'CAN Bus', fiber: 'Fibra' };
+    const typeNames = { star: 'Estrela', line: 'Linha', ring: 'Anel', tree: 'Árvore' };
+    
+    document.getElementById('topologyInfo').textContent = `Topologia: ${typeNames[type]} · Meio: ${mediumNames[medium]}`;
+
+    const W = canvas.clientWidth || 600;
+    const H = canvas.clientHeight || 384;
+    const cx = W / 2, cy = H / 2;
+    const radius = Math.min(W, H) * 0.32;
+
+    const nodes = [];
+    let svg = '';
+
+    // Definições de gradiente
+    svg += `<defs>
+      <radialGradient id="nodeGrad">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0.3"/>
+      </radialGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+
+    // Função para criar nó
+    function makeNode(x, y, label, isHub = false) {
+      const r = isHub ? 22 : 16;
+      return `
+        <circle cx="${x}" cy="${y}" r="${r + 4}" fill="${color}" opacity="0.15" filter="url(#glow)"/>
+        <circle cx="${x}" cy="${y}" r="${r}" fill="url(#nodeGrad)" stroke="${color}" stroke-width="2"/>
+        <text x="${x}" y="${y + 4}" text-anchor="middle" fill="#fff" font-size="${isHub ? 11 : 10}" font-weight="bold" font-family="JetBrains Mono, monospace">${label}</text>
+      `;
+    }
+
+    function makeLink(x1, y1, x2, y2) {
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2" stroke-opacity="0.5"/>`;
+    }
+
+    if (type === 'star') {
+      svg += makeNode(cx, cy, 'SW', true);
+      nodes.push({ x: cx, y: cy });
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+        svg += makeLink(cx, cy, x, y);
+        svg += makeNode(x, y, 'N' + (i + 1));
+      }
+    } 
+    else if (type === 'line') {
+      const spacing = (W - 120) / (count - 1);
+      for (let i = 0; i < count; i++) {
+        const x = 60 + i * spacing;
+        const y = cy;
+        nodes.push({ x, y });
+        if (i > 0) svg += makeLink(nodes[i-1].x, nodes[i-1].y, x, y);
+      }
+      nodes.forEach((n, i) => svg += makeNode(n.x, n.y, 'N' + (i + 1)));
+    }
+    else if (type === 'ring') {
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+        nodes.push({ x, y });
+      }
+      for (let i = 0; i < count; i++) {
+        const next = (i + 1) % count;
+        svg += makeLink(nodes[i].x, nodes[i].y, nodes[next].x, nodes[next].y);
+      }
+      nodes.forEach((n, i) => svg += makeNode(n.x, n.y, 'N' + (i + 1)));
+    }
+    else if (type === 'tree') {
+      // Hub central
+      svg += makeNode(cx, cy - 40, 'SW', true);
+      // Filhos do hub
+      const childY = cy + 60;
+      const childSpacing = (W - 120) / (count - 1);
+      for (let i = 0; i < count; i++) {
+        const x = 60 + i * childSpacing;
+        svg += makeLink(cx, cy - 40, x, childY);
+        svg += makeNode(x, childY, 'N' + (i + 1));
+        // Neto (uma folha)
+        if (i % 2 === 0) {
+          const gx = x;
+          const gy = childY + 70;
+          svg += makeLink(x, childY, gx, gy);
+          svg += makeNode(gx, gy, 'E' + (i + 1));
+        }
+      }
+    }
+
+    // Rótulo de status
+    svg += `<text x="${W - 20}" y="${H - 15}" text-anchor="end" fill="${color}" font-size="10" font-family="JetBrains Mono, monospace" opacity="0.7">● REDE ATIVA</text>`;
+
+    canvas.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+  }
+
+  // Re-render on resize
+  window.addEventListener('resize', () => {
+    if (!document.getElementById('content-topology').classList.contains('hidden')) {
+      renderTopology();
+    }
+  });
+</script>
+</body>
+</html>
